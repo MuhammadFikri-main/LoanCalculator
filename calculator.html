@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h4>MFikri</h4>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Profile</a></li>
+                        <li><a href="calculator.html">Calculator</a></li>
+                    </ul>
+                </nav>
+        </div>
+        <div class="row">
+            <div class="col-1">
+                <div class="content">
+                    <form id="form" action="" method="post">
+                        <p>Loan Amount</p>
+                        <input type="number" id="loan" name="loan" required>
+                        <p>Interest Rate (%)</p>
+                        <input type="number" id="interest" name="interest" required>
+                        <p>Loan Term (Years)</p>
+                        <input type="number" id="years" name="years" required>
+                        <input type="submit" class="btn" value="Calculate">
+                        <input type="button" class="btnClear" value="Clear" onclick="clearForm()">
+                    </form>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="content">
+                    <div class="content-item">
+                        <p>Monthly Payment <br /><span id="monthly"></span></p>
+                    </div>
+                    <div class="content-item">
+                        <p>Total Payment <br /><span id="total"></span></p>
+                    </div>
+                    <div class="content-item">
+                        <p>Total Interest <br /><span id="totalInterest"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>Copyright &copy; <i>Muhammad Fikri</i> 2023 | All rights reserved</p>
+</footer>
+<script>
+    // Get form and output elements
+    const form = document.getElementById('form');
+
+    // Function to calculate and display the monthly payment
+    function calculateMonthlyPayment(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Get input values
+        const loanAmount = parseFloat(document.getElementById('loan').value);
+        const interestRate = parseFloat(document.getElementById('interest').value);
+        const loanTerm = parseFloat(document.getElementById('years').value);
+
+        // Check for valid input
+        if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(loanTerm)) {
+            alert('Please enter valid numeric values for all fields.');
+            return;
+        }
+
+        // Calculate monthly payment
+        const monthlyInterestRate = interestRate / 100 / 12;
+        const numPayments = loanTerm * 12;
+        const monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numPayments));
+        const totalPayment = monthlyPayment * numPayments;
+        const totalInterestPayment = totalPayment - loanAmount;
+
+        // Display the result
+        document.getElementById("monthly").innerHTML = 'RM ' + monthlyPayment.toFixed(2);
+        document.getElementById("total").innerHTML = 'RM ' + totalPayment.toFixed(2);
+        document.getElementById("totalInterest").innerHTML = 'RM ' + totalInterestPayment.toFixed(2);
+
+        // Show success message
+        alert('Calculation successful!');
+    }
+
+    // Function to handle the "Clear" button click
+    function clearForm() {
+        // Display a confirmation dialog
+        const confirmClear = confirm('Are you sure you want to clear the form?');
+
+        // Clear the form if confirmed
+        if (confirmClear) {
+            document.getElementById('form').reset();
+            document.getElementById("monthly").innerHTML = '';
+            document.getElementById("total").innerHTML = '';
+            document.getElementById("totalInterest").innerHTML = '';
+        }
+    }
+
+    // Add event listener to the form
+    form.addEventListener('submit', calculateMonthlyPayment);
+    document.getElementById('btnClear').addEventListener('click', clearForm);
+</script>
+</body>
+</html>
